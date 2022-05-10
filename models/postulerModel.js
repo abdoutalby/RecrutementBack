@@ -23,6 +23,24 @@ const postulerSchema = mongoose.Schema({
     moyfe: {
         type: Number,
     },
+    datedep: {
+        type: Date,
+    },
+    datenaissance: {
+        type: Date,
+    },
+    tel: {
+        type: String,
+    },
+    name: {
+        type: String,
+    },
+    lastname: {
+        type: String,
+    },
+    cin: {
+        type: String,
+    },
 }, {
     timestamps: true,
 });

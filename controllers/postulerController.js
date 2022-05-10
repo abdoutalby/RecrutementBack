@@ -35,9 +35,15 @@ const createPostulation = asyncHandler(async(req, res) => {
         annonce: req.body.annonce,
         condidat: req.body.condidat,
         diplome: req.body.diplome,
+        datedep: req.body.datedep,
         reponse: null,
         exp: res.body.exp,
         moyfe: req.body.moyfe,
+        tel: req.body.tel,
+        cin: req.body.cin,
+        name: req.body.name,
+        lastname: req.body.lastname,
+        datenaissance: req.body.datenaissance,
     });
 
     res.status(200).json(postulation);
