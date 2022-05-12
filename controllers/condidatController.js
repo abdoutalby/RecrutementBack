@@ -7,7 +7,7 @@ const Condidat = require("../models/condidatModel");
 // @route   POST /api/condidats
 // @access  Public
 const registerCondidat = asyncHandler(async(req, res) => {
-    const { name, email, password, tel, adress } = req.body;
+    const { name, email, password, tel, adress,status } = req.body;
 
     if (!name || !email || !password) {
         res.status(400);
@@ -25,7 +25,7 @@ const registerCondidat = asyncHandler(async(req, res) => {
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const active = false;
+    
     // Create condidat
     const condidat = await Condidat.create({
         name,
@@ -33,7 +33,7 @@ const registerCondidat = asyncHandler(async(req, res) => {
         password: hashedPassword,
         tel,
         adress,
-        active,
+        status:false,
     });
 
     if (condidat) {
@@ -41,6 +41,8 @@ const registerCondidat = asyncHandler(async(req, res) => {
             _id: condidat.id,
             name: condidat.name,
             email: condidat.email,
+            adress:condidat.adress,
+            tel:condidat.tel,
             token: generateToken(condidat._id),
         });
     } else {
@@ -75,11 +77,14 @@ const loginCondidat = asyncHandler(async(req, res) => {
     // Check for user email
     const condidat = await Condidat.findOne({ email });
 
-    if (condidat && (await bcrypt.compare(password, condidat.password))) {
+    if (condidat &&condidat.status && (await bcrypt.compare(password, condidat.password))) {
+       
         res.json({
             _id: condidat.id,
             name: condidat.name,
             email: condidat.email,
+            adress:condidat.adress,
+            tel:condidat.tel,
             token: generateToken(condidat._id),
         });
     } else {

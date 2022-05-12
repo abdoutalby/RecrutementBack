@@ -17,7 +17,7 @@ router.post("/login", loginRecruter);
 router.get("/", getAll);
 router.delete("/:id", deleteRecruter);
 router.put("/:id", statusUpdate);
-router.get("/:id", getById);
+router.get("/me/:id", getById);
 router.patch("/:id", update);
 
 module.exports = router;

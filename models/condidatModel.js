@@ -22,7 +22,7 @@ const condidatSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please add a phone number']
     },
-    active: {
+    status: {
         type: Boolean,
     }
 }, {

@@ -19,6 +19,7 @@ router.get("/", getCondidats);
 router.get("/:id", getById);
 router.delete("/:id", deleteCondidat);
 router.put("/:id", changeStatus);
+
 router.patch("/:id", update);
 
 module.exports = router;

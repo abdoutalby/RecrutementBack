@@ -12,7 +12,7 @@ const postulerSchema = mongoose.Schema({
         ref: "Condidat",
     },
     reponse: {
-        type: Boolean,
+        type: String,
     },
     diplome: {
         type: String,
@@ -39,6 +39,9 @@ const postulerSchema = mongoose.Schema({
         type: String,
     },
     cin: {
+        type: String,
+    },
+    email: {
         type: String,
     },
 }, {

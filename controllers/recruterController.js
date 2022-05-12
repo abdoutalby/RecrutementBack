@@ -100,7 +100,6 @@ const statusUpdate = asyncHandler(async(req, res) => {
 });
 
 const getById = asyncHandler(async(req, res) => {
-    console.log(req.params.id, "hedha l id ");
     const recruter = await Recruter.findById(req.params.id);
     if (!recruter) {
         res.status(404).json("no recruter with this id ");
