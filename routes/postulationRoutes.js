@@ -19,4 +19,5 @@ router.put("/:id", updatePostulation);
 router.get("/:id", getById);
 router.get("/condidat/:id",getByC)
 
+
 module.exports = router;

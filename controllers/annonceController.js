@@ -48,6 +48,17 @@ const getById = asyncHandler(async(req, res) => {
     if (!a) res.status(404).json("no annonce found ");
     res.status(200).json(a);
 });
+
+const getByRecruter = asyncHandler(async(req, res) => {
+    
+    const recruter=req.params.recruter
+    const annonce = await Annonce.find({recruter});
+console.log(annonce,'rec')
+console.log(req.params.id,'params')
+    res.status(200).json(annonce);
+});
+
+
 // @desc    Update Annonce
 // @route   PUT /api/Annoncess/:id
 // @access  Private
@@ -116,4 +127,5 @@ module.exports = {
     updateAnnonce,
     deleteAnnonce,
     getById,
+    getByRecruter
 };
