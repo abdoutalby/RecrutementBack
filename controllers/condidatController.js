@@ -7,7 +7,7 @@ const Condidat = require("../models/condidatModel");
 // @route   POST /api/condidats
 // @access  Public
 const registerCondidat = asyncHandler(async(req, res) => {
-    const { name, email, password, tel, adress,status } = req.body;
+    const { name, email, password, tel, adress, status } = req.body;
 
     if (!name || !email || !password) {
         res.status(400);
@@ -25,7 +25,7 @@ const registerCondidat = asyncHandler(async(req, res) => {
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     // Create condidat
     const condidat = await Condidat.create({
         name,
@@ -33,7 +33,7 @@ const registerCondidat = asyncHandler(async(req, res) => {
         password: hashedPassword,
         tel,
         adress,
-        status:false,
+        active: false,
     });
 
     if (condidat) {
@@ -41,8 +41,8 @@ const registerCondidat = asyncHandler(async(req, res) => {
             _id: condidat.id,
             name: condidat.name,
             email: condidat.email,
-            adress:condidat.adress,
-            tel:condidat.tel,
+            adress: condidat.adress,
+            tel: condidat.tel,
             token: generateToken(condidat._id),
         });
     } else {
@@ -76,20 +76,23 @@ const loginCondidat = asyncHandler(async(req, res) => {
 
     // Check for user email
     const condidat = await Condidat.findOne({ email });
-
-    if (condidat &&condidat.status && (await bcrypt.compare(password, condidat.password))) {
-       
-        res.json({
-            _id: condidat.id,
-            name: condidat.name,
-            email: condidat.email,
-            adress:condidat.adress,
-            tel:condidat.tel,
-            token: generateToken(condidat._id),
-        });
+    if (condidat.active) {
+        if (condidat && (await bcrypt.compare(password, condidat.password))) {
+            res.json({
+                _id: condidat.id,
+                name: condidat.name,
+                email: condidat.email,
+                adress: condidat.adress,
+                tel: condidat.tel,
+                token: generateToken(condidat._id),
+            });
+        } else {
+            res.status(400);
+            throw new Error("Invalid credentials");
+        }
     } else {
         res.status(400);
-        throw new Error("Invalid credentials");
+        throw new Error("please activate your account");
     }
 });
 

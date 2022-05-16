@@ -18,7 +18,7 @@ const registerRecruter = asyncHandler(async(req, res) => {
     const exists = await Recruter.findOne({ email });
 
     if (exists) {
-        res.status(400);
+        res.status(409);
         throw new Error(" Recruter exists");
     }
 
@@ -59,6 +59,10 @@ const loginRecruter = asyncHandler(async(req, res) => {
     // Check for recruter email
     const recruter = await Recruter.findOne({ email });
 
+    if (!recruter.status) {
+        res.status(400);
+        throw new Error("inactive recruter account");
+    }
     if (recruter && (await bcrypt.compare(password, recruter.password))) {
         res.json({
             _id: recruter.id,

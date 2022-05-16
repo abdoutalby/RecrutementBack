@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const postulerSchema = mongoose.Schema({
     annonce: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: "Annonce",
     },
     condidat: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: "Condidat",
     },

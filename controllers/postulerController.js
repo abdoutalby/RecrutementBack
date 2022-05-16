@@ -1,8 +1,18 @@
 const asyncHandler = require("express-async-handler");
-
+const nodemailer = require("nodemailer");
 const Annonce = require("../models/annonceModel");
 const Condidat = require("../models/condidatModel");
 const Postuler = require("../models/postulerModel");
+
+const transporter = nodemailer.createTransport({
+    port: 465,
+    host: "smtp.gmail.com",
+    auth: {
+        user: "abderrahmentalby@gmail.com",
+        pass: "25556506@gmail",
+    },
+    secure: true, // upgrades later with STARTTLS -- change this based on the PORT
+});
 
 // @desc    Get all postulations
 // @route   GET /api/postulations
@@ -23,11 +33,10 @@ const getById = asyncHandler(async(req, res) => {
 });
 
 const getByC = asyncHandler(async(req, res) => {
-    
-    const condidat=req.params.id
-    const postulation = await Postuler.find({condidat});
-console.log(postulation,'postulation')
-console.log(req.params.id,'params')
+    const condidat = req.params.id;
+    const postulation = await Postuler.find({ condidat });
+    console.log(postulation, "postulation");
+    console.log(req.params.id, "params");
     res.status(200).json(postulation);
 });
 
@@ -35,11 +44,22 @@ console.log(req.params.id,'params')
 // @route   POST /api/postulations
 // @access  Private
 const createPostulation = asyncHandler(async(req, res) => {
-    if (!req.body.annonce) {
+    if (!req.body) {
         res.status(400);
         throw new Error("Please add a postulation object ");
     }
+    console.log(req.body, "hedha fesh nabeth ");
+    const { annonce, condidat } = req.body;
 
+    const postul = await Postuler.find({ annonce });
+    console.log(postul, "hedhy lpostulation condidat");
+    console.log("condidat =", condidat, "annonce =", annonce);
+
+    if (postul.length > 0 && postul[0].condidat === condidat) {
+        console.log(postul[0].condidat === condidat, "hedha test");
+        res.status(409);
+        throw new Error("already postuled");
+    }
     const postulation = await Postuler.create({
         annonce: req.body.annonce,
         condidat: req.body.condidat,
@@ -53,10 +73,31 @@ const createPostulation = asyncHandler(async(req, res) => {
         name: req.body.name,
         lastname: req.body.lastname,
         datenaissance: req.body.datenaissance,
-        email:req.body.email,
+        email: req.body.email,
     });
 
-    res.status(200).json(postulation);
+    if (postulation) {
+        const mailData = {
+            from: "abderrahmentalby@gmail.com",
+            to: postulation.email,
+            subject: "Postulation",
+            html: "<b>Hey there! </b><br> this mail is to annonce you that you have postuled <br/>",
+        };
+
+        transporter.sendMail(mailData, (error, info) => {
+            if (error) {
+                res.status(409).json("something went wrong ");
+            }
+            res.status(200).json(postulation);
+        });
+    }
+});
+
+const email = asyncHandler(async(req, res) => {
+    const { to, subject, text } = req.body;
+    if (!to) {
+        res.status(400).send("please verify ");
+    }
 });
 
 // @desc    Update postulation
@@ -64,7 +105,7 @@ const createPostulation = asyncHandler(async(req, res) => {
 // @access  Private
 const updatePostulation = asyncHandler(async(req, res) => {
     const postulation = await Postuler.findById(req.params.id);
-    const up = req.body
+    const up = req.body;
 
     if (!postulation) {
         res.status(400);
@@ -72,7 +113,6 @@ const updatePostulation = asyncHandler(async(req, res) => {
     }
 
     // Check for user
-   
 
     // Make sure the logged in user matches the Annonces user
     //   if (postulation.user.toString() !== req.user.id) {
@@ -80,9 +120,9 @@ const updatePostulation = asyncHandler(async(req, res) => {
     //     throw new Error('User not authorized')
     //   }
 
-    await Postuler.findByIdAndUpdate(req.params.id,up);
-    const updated = await Postuler.findById(req.params.id)
-    console.log(updated)
+    await Postuler.findByIdAndUpdate(req.params.id, up);
+    const updated = await Postuler.findById(req.params.id);
+    console.log(updated);
     res.status(200).json(updated);
 });
 
@@ -97,9 +137,6 @@ const deletePostulation = asyncHandler(async(req, res) => {
         throw new Error("postulation not found");
     }
 
-   
- 
-
     await Postuler.findByIdAndRemove(req.params.id);
 
     res.status(200).json({ id: req.params.id });
@@ -111,5 +148,6 @@ module.exports = {
     deletePostulation,
     createPostulation,
     getById,
-    getByC
+    getByC,
+    email,
 };
