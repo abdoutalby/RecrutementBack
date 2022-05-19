@@ -10,7 +10,6 @@ const {
     getById,
     update,
 } = require("../controllers/recruterController");
-const { recruterProtect } = require("../middleware/recruterMiddleware");
 
 router.post("/register", registerRecruter);
 router.post("/login", loginRecruter);

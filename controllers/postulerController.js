@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 const Annonce = require("../models/annonceModel");
 const Condidat = require("../models/condidatModel");
 const Postuler = require("../models/postulerModel");
+const Qes = require("../models/qes");
 
 const transporter = nodemailer.createTransport({
     port: 465,
@@ -32,12 +33,75 @@ const getById = asyncHandler(async(req, res) => {
     res.status(200).json(postulation);
 });
 
+const accept = asyncHandler(async(req, res) => {
+    const postulation = await Postuler.findById(req.params.id);
+    postulation.reponse = "accepted";
+    await Postuler.findByIdAndUpdate(postulation._id, postulation);
+    const p = await Postuler.findById(req.params.id);
+    res.status(200).json(p);
+});
+
+const reject = asyncHandler(async(req, res) => {
+    const postulation = await Postuler.findById(req.params.id);
+    postulation.reponse = "rejected";
+    await Postuler.findByIdAndUpdate(postulation._id, postulation);
+    const p = await Postuler.findById(req.params.id);
+    res.status(200).json(p);
+});
+
 const getByC = asyncHandler(async(req, res) => {
     const condidat = req.params.id;
     const postulation = await Postuler.find({ condidat });
     console.log(postulation, "postulation");
     console.log(req.params.id, "params");
     res.status(200).json(postulation);
+});
+
+const getByRec = asyncHandler(async(req, res) => {
+    const recruter = req.params.id;
+    var p = [];
+    const annonces = await Annonce.find({ recruter });
+    console.log(
+        annonces,
+        "hedhom les annonce lkol ----------------------------------------------------"
+    );
+    for await (const element of annonces) {
+        const annonce = element._id.toString();
+        console.log(annonce, "id");
+        const a = await Postuler.find({ annonce });
+        for await (pp of a) {
+            p.push(pp);
+        }
+    }
+
+    await console.log(p, "postulation");
+    res.status(200).json(p);
+});
+
+const getByA = asyncHandler(async(req, res) => {
+    const annonce = req.params.id;
+    const postulation = await Postuler.find({ annonce });
+    res.status(200).json(postulation);
+});
+
+const qestionaire = asyncHandler(async(req, res) => {
+    const data = req.body;
+
+    const q = await Qes.create(data);
+    if (q) {
+        res.status(201).json(q);
+    }
+});
+
+const getQuest = asyncHandler(async(req, res) => {
+    const id = req.params.id;
+    const p = await Postuler.findById(id);
+    const postulation = p._id;
+    const q = await Qes.find({
+        postulation,
+    });
+
+    res.status(200).json(q);
 });
 
 // @desc    Add postulation
@@ -88,9 +152,9 @@ const createPostulation = asyncHandler(async(req, res) => {
             if (error) {
                 res.status(409).json("something went wrong ");
             }
-            res.status(200).json(postulation);
         });
     }
+    res.status(200).json(postulation);
 });
 
 const email = asyncHandler(async(req, res) => {
@@ -150,4 +214,10 @@ module.exports = {
     getById,
     getByC,
     email,
+    getByRec,
+    reject,
+    accept,
+    getByA,
+    qestionaire,
+    getQuest,
 };

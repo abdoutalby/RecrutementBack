@@ -50,14 +50,12 @@ const getById = asyncHandler(async(req, res) => {
 });
 
 const getByRecruter = asyncHandler(async(req, res) => {
-    
-    const recruter=req.params.recruter
-    const annonce = await Annonce.find({recruter});
-console.log(annonce,'rec')
-console.log(req.params.id,'params')
+    const recruter = req.params.recruter;
+    const annonce = await Annonce.find({ recruter });
+    console.log(annonce, "rec");
+    console.log(req.params.id, "params");
     res.status(200).json(annonce);
 });
-
 
 // @desc    Update Annonce
 // @route   PUT /api/Annoncess/:id
@@ -68,18 +66,6 @@ const updateAnnonce = asyncHandler(async(req, res) => {
     if (!annonce) {
         res.status(400);
         throw new Error("annonce not found");
-    }
-
-    // Check for user
-    if (!req.user) {
-        res.status(401);
-        throw new Error("User not found");
-    }
-
-    // Make sure the logged in user matches the Annonces user
-    if (annonce.user.toString() !== req.user.id) {
-        res.status(401);
-        throw new Error("User not authorized");
     }
 
     const updatedAnnonce = await Annonce.findByIdAndUpdate(
@@ -127,5 +113,5 @@ module.exports = {
     updateAnnonce,
     deleteAnnonce,
     getById,
-    getByRecruter
+    getByRecruter,
 };

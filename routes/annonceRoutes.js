@@ -7,6 +7,7 @@ const {
     getById,
     deleteAnnonce,
     getByRecruter,
+    updateAnnonce
 } = require("../controllers/annonceController");
 const { recruterProtect } = require("../middleware/recruterMiddleware");
 
@@ -16,6 +17,7 @@ router.get("/all", getAll);
 router.get("/:id", getById);
 router.delete("/:id", deleteAnnonce);
 router.get("/rec/:recruter", getByRecruter);
+router.put('/:id', updateAnnonce)
 
 
 module.exports = router;

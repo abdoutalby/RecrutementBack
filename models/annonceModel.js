@@ -2,9 +2,8 @@ const mongoose = require("mongoose");
 
 const annonceSchema = mongoose.Schema({
     recruter: {
-        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "Recruter",
+        type: String,
     },
     specialite: {
         type: String,
