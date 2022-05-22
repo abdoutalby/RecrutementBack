@@ -33,7 +33,7 @@ const registerCondidat = asyncHandler(async(req, res) => {
         password: hashedPassword,
         tel,
         adress,
-        active: false,
+        active: req.body.active ? true : false,
     });
 
     if (condidat) {

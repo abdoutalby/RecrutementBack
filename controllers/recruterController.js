@@ -7,8 +7,8 @@ const Recruter = require("../models/recruterModel");
 // @route   POST /api/recruters
 // @access  Public
 const registerRecruter = asyncHandler(async(req, res) => {
-    const { name, email, password, tel, adress } = req.body;
-    const status = false;
+    const { name, email, password, tel, adress, status } = req.body;
+
     if (!name || !email || !password) {
         res.status(400);
         throw new Error("Please add all fields");

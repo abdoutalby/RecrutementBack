@@ -150,18 +150,11 @@ const createPostulation = asyncHandler(async(req, res) => {
 
         transporter.sendMail(mailData, (error, info) => {
             if (error) {
-                res.status(409).json("something went wrong ");
+                console.log(error, "something went wrong ");
             }
         });
     }
     res.status(200).json(postulation);
-});
-
-const email = asyncHandler(async(req, res) => {
-    const { to, subject, text } = req.body;
-    if (!to) {
-        res.status(400).send("please verify ");
-    }
 });
 
 // @desc    Update postulation
@@ -213,7 +206,7 @@ module.exports = {
     createPostulation,
     getById,
     getByC,
-    email,
+
     getByRec,
     reject,
     accept,
