@@ -101,7 +101,7 @@ const deleteAnnonce = asyncHandler(async(req, res) => {
     //     throw new Error("User not authorized");
     // }
 
-    await Annonce.findOneAndDelete(req.params.id);
+    await Annonce.remove(annonce);
 
     res.status(200).json({ id: req.params.id });
 });

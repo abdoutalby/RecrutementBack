@@ -7,7 +7,7 @@ const Condidat = require("../models/condidatModel");
 // @route   GET /api/cv
 // @access  Private
 const get = asyncHandler(async(req, res) => {
-    const cv = await CV.find({ recruter: req.user.id });
+    const cv = await CV.find();
 
     res.status(200).json(cv);
 });
@@ -17,7 +17,7 @@ const get = asyncHandler(async(req, res) => {
 // @access  Private
 const getAll = asyncHandler(async(req, res) => {
     const condidat = req.params.id;
-    const cvs = await CV.find({
+    const cvs = await CV.findOne({
         condidat,
     });
 
@@ -75,8 +75,9 @@ const updateCV = asyncHandler(async(req, res) => {
     const updated = await CV.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
     });
+    const up = await CV.findById(req.params.id);
 
-    res.status(200).json(updated);
+    res.status(200).json(up);
 });
 
 // @desc    Delete CV
@@ -89,7 +90,7 @@ const deleteCV = asyncHandler(async(req, res) => {
         res.status(400);
         throw new Error("CV not found");
     }
-
+    console.log("deleeeeteeeddd ");
     await CV.remove();
 
     res.status(200).json({ id: req.params.id });
@@ -101,8 +102,8 @@ const deleteCV = asyncHandler(async(req, res) => {
 const getByDiplome = asyncHandler(async(req, res) => {
     const diplome = req.params.diplome;
     const cv = await CV.find({
-        "diplome ": {
-            $regex: ".*" + diplome,
+        "diplome": {
+            $regex: ".*" + diplome + "*.",
         },
     });
 
